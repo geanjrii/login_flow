@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +25,7 @@ void main() {
       await tester.pumpWidget(
         RepositoryProvider.value(
           value: authenticationRepository,
-          child: MaterialApp(
+          child: const MaterialApp(
             home: Scaffold(body: LoginPage()),
           ),
         ),

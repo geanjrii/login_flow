@@ -4,7 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:login_flow/feature_layer/login/login.dart';
 
 void main() {
-  const username = Username.dirty('username');
+  const email = Email.dirty('email');
   const password = Password.dirty('password');
   group('LoginState', () {
     test('supports value comparisons', () {
@@ -22,10 +22,10 @@ void main() {
       );
     });
 
-    test('returns object with updated username when username is passed', () {
+    test('returns object with updated email when email is passed', () {
       expect(
-        LoginState().copyWith(username: username),
-        LoginState(username: username),
+        LoginState().copyWith(email: email),
+        LoginState(email: email),
       );
     });
 

@@ -3,8 +3,39 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:login_flow/feature_layer/login/login.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailFocusNode.addListener(() {
+      if (!_emailFocusNode.hasFocus) {
+        context.read<LoginBloc>().add(EmailUnfocused());
+        FocusScope.of(context).requestFocus(_passwordFocusNode);
+      }
+    });
+    _passwordFocusNode.addListener(() {
+      if (!_passwordFocusNode.hasFocus) {
+        context.read<LoginBloc>().add(PasswordUnfocused());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +54,15 @@ class LoginForm extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _UsernameInput(),
+            EmailInput(
+              focusNode: _emailFocusNode,
+            ),
             const Padding(padding: EdgeInsets.all(12)),
-            _PasswordInput(),
+            PasswordInput(
+              focusNode: _passwordFocusNode,
+            ),
             const Padding(padding: EdgeInsets.all(12)),
-            _LoginButton(),
+            const LoginButton(),
           ],
         ),
       ),
@@ -35,50 +70,74 @@ class LoginForm extends StatelessWidget {
   }
 }
 
-class _UsernameInput extends StatelessWidget {
+class EmailInput extends StatelessWidget {
+  const EmailInput({required this.focusNode, super.key});
+
+  final FocusNode focusNode;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.username != current.username,
       builder: (context, state) {
-        return TextField(
+        return TextFormField(
           key: const Key('loginForm_usernameInput_textField'),
-          onChanged: (username) =>
-              context.read<LoginBloc>().add(LoginUsernameChanged(username)),
+          initialValue: state.email.value,
+          focusNode: focusNode,
           decoration: InputDecoration(
-            labelText: 'username',
-            errorText:
-                state.username.displayError != null ? 'invalid username' : null,
+            icon: const Icon(Icons.email),
+            labelText: 'Email',
+            helperText: 'A complete, valid email e.g. joe@gmail.com',
+            errorText: state.email.displayError != null
+                ? 'Please ensure the email entered is valid'
+                : null,
           ),
+          keyboardType: TextInputType.emailAddress,
+          onChanged: (email) =>
+              context.read<LoginBloc>().add(LoginUsernameChanged(email)),
+          textInputAction: TextInputAction.next,
         );
       },
     );
   }
 }
 
-class _PasswordInput extends StatelessWidget {
+class PasswordInput extends StatelessWidget {
+  const PasswordInput({required this.focusNode, super.key});
+
+  final FocusNode focusNode;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
-        return TextField(
+        return TextFormField(
           key: const Key('loginForm_passwordInput_textField'),
+          initialValue: state.password.value,
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            icon: const Icon(Icons.lock),
+            helperText:
+                '''Password should be at least 8 characters with at least one letter and number''',
+            helperMaxLines: 2,
+            labelText: 'Password',
+            errorMaxLines: 2,
+            errorText: state.password.displayError != null
+                ? '''Password must be at least 8 characters and contain at least one letter and number'''
+                : null,
+          ),
+          obscureText: true,
           onChanged: (password) =>
               context.read<LoginBloc>().add(LoginPasswordChanged(password)),
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: 'password',
-            errorText:
-                state.password.displayError != null ? 'invalid password' : null,
-          ),
+          textInputAction: TextInputAction.done,
         );
       },
     );
   }
 }
 
-class _LoginButton extends StatelessWidget {
+class LoginButton extends StatelessWidget {
+  const LoginButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(

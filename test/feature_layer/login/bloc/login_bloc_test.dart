@@ -9,6 +9,10 @@ class MockAuthenticationRepository extends Mock
     implements AuthenticationRepository {}
 
 void main() {
+  const mockEmail = 'mock@email.com';
+  const mockPassword = 'ValidPassword123';
+
+
   late AuthenticationRepository authenticationRepository;
 
   setUp(() {
@@ -33,34 +37,34 @@ void main() {
         setUp: () {
           when(
             () => authenticationRepository.logIn(
-              username: 'username',
-              password: 'password',
+              email: mockEmail,
+              password: mockPassword,
             ),
           ).thenAnswer((_) => Future<String>.value('user'));
         },
         build: buildBloc,
         act: (bloc) {
           bloc
-            ..add(const LoginUsernameChanged('username'))
-            ..add(const LoginPasswordChanged('password'))
+            ..add(const LoginUsernameChanged(mockEmail))
+            ..add(const LoginPasswordChanged(mockPassword))
             ..add(const LoginSubmitted());
         },
         expect: () => const <LoginState>[
-          LoginState(username: Username.dirty('username')),
+          LoginState(email: Email.dirty(mockEmail)),
           LoginState(
-            username: Username.dirty('username'),
-            password: Password.dirty('password'),
+            email: Email.dirty(mockEmail),
+            password: Password.dirty(mockPassword),
             isValid: true,
           ),
           LoginState(
-            username: Username.dirty('username'),
-            password: Password.dirty('password'),
+            email: Email.dirty(mockEmail),
+            password: Password.dirty(mockPassword),
             isValid: true,
             status: FormzSubmissionStatus.inProgress,
           ),
           LoginState(
-            username: Username.dirty('username'),
-            password: Password.dirty('password'),
+            email: Email.dirty(mockEmail),
+            password: Password.dirty(mockPassword),
             isValid: true,
             status: FormzSubmissionStatus.success,
           ),
@@ -72,36 +76,36 @@ void main() {
         setUp: () {
           when(
             () => authenticationRepository.logIn(
-              username: 'username',
-              password: 'password',
+              email: mockEmail,
+              password: mockPassword,
             ),
           ).thenThrow(Exception('oops'));
         },
         build: buildBloc,
         act: (bloc) {
           bloc
-            ..add(const LoginUsernameChanged('username'))
-            ..add(const LoginPasswordChanged('password'))
+            ..add(const LoginUsernameChanged(mockEmail))
+            ..add(const LoginPasswordChanged(mockPassword))
             ..add(const LoginSubmitted());
         },
         expect: () => const <LoginState>[
           LoginState(
-            username: Username.dirty('username'),
+            email: Email.dirty(mockEmail),
           ),
           LoginState(
-            username: Username.dirty('username'),
-            password: Password.dirty('password'),
+            email: Email.dirty(mockEmail),
+            password: Password.dirty(mockPassword),
             isValid: true,
           ),
           LoginState(
-            username: Username.dirty('username'),
-            password: Password.dirty('password'),
+            email: Email.dirty(mockEmail),
+            password: Password.dirty(mockPassword),
             isValid: true,
             status: FormzSubmissionStatus.inProgress,
           ),
           LoginState(
-            username: Username.dirty('username'),
-            password: Password.dirty('password'),
+            email: Email.dirty(mockEmail),
+            password: Password.dirty(mockPassword),
             isValid: true,
             status: FormzSubmissionStatus.failure,
           ),

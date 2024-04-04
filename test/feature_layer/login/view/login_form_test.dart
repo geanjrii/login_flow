@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,7 @@ void main() {
     });
 
     testWidgets(
-        'adds LoginUsernameChanged to LoginBloc when username is updated',
+        'adds LoginEmailChanged to LoginBloc when Email is updated',
         (tester) async {
       const username = 'username';
       when(() => loginBloc.state).thenReturn(const LoginState());
@@ -29,7 +28,7 @@ void main() {
           home: Scaffold(
             body: BlocProvider.value(
               value: loginBloc,
-              child: LoginForm(),
+              child: const LoginForm(),
             ),
           ),
         ),
@@ -53,7 +52,7 @@ void main() {
           home: Scaffold(
             body: BlocProvider.value(
               value: loginBloc,
-              child: LoginForm(),
+              child: const LoginForm(),
             ),
           ),
         ),
@@ -74,7 +73,7 @@ void main() {
           home: Scaffold(
             body: BlocProvider.value(
               value: loginBloc,
-              child: LoginForm(),
+              child: const LoginForm(),
             ),
           ),
         ),
@@ -94,7 +93,7 @@ void main() {
           home: Scaffold(
             body: BlocProvider.value(
               value: loginBloc,
-              child: LoginForm(),
+              child: const LoginForm(),
             ),
           ),
         ),
@@ -111,7 +110,7 @@ void main() {
           home: Scaffold(
             body: BlocProvider.value(
               value: loginBloc,
-              child: LoginForm(),
+              child: const LoginForm(),
             ),
           ),
         ),
@@ -128,7 +127,7 @@ void main() {
           home: Scaffold(
             body: BlocProvider.value(
               value: loginBloc,
-              child: LoginForm(),
+              child: const LoginForm(),
             ),
           ),
         ),
@@ -152,7 +151,7 @@ void main() {
           home: Scaffold(
             body: BlocProvider.value(
               value: loginBloc,
-              child: LoginForm(),
+              child: const LoginForm(),
             ),
           ),
         ),

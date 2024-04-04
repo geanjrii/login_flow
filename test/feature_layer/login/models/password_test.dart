@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:login_flow/feature_layer/login/login.dart';
 
 void main() {
-  const passwordString = 'mock-password';
+  const mockPassword = 'ValidPassword123';
   group('Password', () {
     group('constructors', () {
       test('pure creates correct instance', () {
@@ -13,8 +13,8 @@ void main() {
       });
 
       test('dirty creates correct instance', () {
-        final password = Password.dirty(passwordString);
-        expect(password.value, passwordString);
+        final password = Password.dirty(mockPassword);
+        expect(password.value, mockPassword);
         expect(password.isPure, isFalse);
       });
     });
@@ -23,13 +23,13 @@ void main() {
       test('returns empty error when password is empty', () {
         expect(
           Password.dirty().error,
-          PasswordValidationError.empty,
+          PasswordValidationError.invalid,
         );
       });
 
       test('is valid when password is not empty', () {
         expect(
-          Password.dirty(passwordString).error,
+          Password.dirty(mockPassword).error,
           isNull,
         );
       });

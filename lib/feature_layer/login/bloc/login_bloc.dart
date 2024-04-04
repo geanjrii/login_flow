@@ -16,6 +16,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         super(const LoginState()) {
     on<LoginUsernameChanged>(_onUsernameChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
+    on<EmailUnfocused>(_onEmailUnfocused);
+    on<PasswordUnfocused>(_onPasswordUnfocused);
     on<LoginSubmitted>(_onSubmitted);
   }
 
@@ -25,11 +27,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginUsernameChanged event,
     Emitter<LoginState> emit,
   ) {
-    final username = Username.dirty(event.username);
+    final email = Email.dirty(event.email);
     emit(
       state.copyWith(
-        username: username,
-        isValid: Formz.validate([state.password, username]),
+        email: email,
+        isValid: Formz.validate([state.password, email]),
       ),
     );
   }
@@ -42,7 +44,32 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(
       state.copyWith(
         password: password,
-        isValid: Formz.validate([password, state.username]),
+        isValid: Formz.validate([password, state.email]),
+      ),
+    );
+  }
+
+    void _onEmailUnfocused(EmailUnfocused event, Emitter<LoginState> emit) {
+    final email = Email.dirty(state.email.value);
+    emit(
+      state.copyWith(
+        email: email,
+        isValid: Formz.validate([email, state.password]),
+        status: FormzSubmissionStatus.initial,
+      ),
+    );
+  }
+
+  void _onPasswordUnfocused(
+    PasswordUnfocused event,
+    Emitter<LoginState> emit,
+  ) {
+    final password = Password.dirty(state.password.value);
+    emit(
+      state.copyWith(
+        password: password,
+        isValid: Formz.validate([state.email, password]),
+        status: FormzSubmissionStatus.initial,
       ),
     );
   }
@@ -55,7 +82,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
         await _authenticationRepository.logIn(
-          username: state.username.value,
+          email: state.email.value,
           password: state.password.value,
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
